@@ -31,12 +31,22 @@ class NodeWidget extends StatefulWidget {
 
 class _NodeWidgetState extends State<NodeWidget> {
   bool get _isLeaf {
-    return widget.treeNode.children == null ||
+    return !widget.treeNode.lazy || 
+        widget.treeNode.children == null ||
         widget.treeNode.children!.isEmpty;
   }
 
   bool get _isExpanded {
     return widget.state.isNodeExpanded(widget.treeNode.key!);
+  }
+
+  Future<List<TreeNode>>? future;
+
+  @override
+  void initState() {
+    super.initState();
+
+    future = widget.treeNode.onExpandToggle();
   }
 
   @override
@@ -66,6 +76,26 @@ class _NodeWidgetState extends State<NodeWidget> {
           ],
         ),
         if (_isExpanded && !_isLeaf)
+          if (widget.treeNode.lazy) {
+            FutureBuilder(
+              future: future,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  List<TreeNode> children = widget.treeNode.children ?? [];
+
+                  children = [...children, ...snapshot.data];
+
+                  return Padding(
+                    padding: EdgeInsets.only(left: widget.indent!),
+                    child: buildNodes(widget.treeNode.children!, widget.indent,
+                        widget.state, widget.iconSize),
+                  );
+                }
+
+                return CircularProgressIndicator();
+              }
+            )
+          }
           Padding(
             padding: EdgeInsets.only(left: widget.indent!),
             child: buildNodes(widget.treeNode.children!, widget.indent,

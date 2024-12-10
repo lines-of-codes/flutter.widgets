@@ -11,7 +11,9 @@ class TreeNode {
   final List<TreeNode>? children;
   final Widget content;
   final Key? key;
+  final bool lazy;
+  final Future<List<TreeNode>> Function()? onExpandToggle;
 
-  TreeNode({this.key, this.children, Widget? content})
+  TreeNode({this.key, this.children = [], Widget? content, this.lazy = false, this.onExpandToggle})
       : content = content ?? Container(width: 0, height: 0);
 }
