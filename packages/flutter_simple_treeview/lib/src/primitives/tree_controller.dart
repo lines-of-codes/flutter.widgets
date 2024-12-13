@@ -11,9 +11,13 @@ import 'package:flutter/foundation.dart';
 /// Allows to modify the state of the tree.
 class TreeController {
   bool _allNodesExpanded;
-  final Map<Key, bool> _expanded = <Key, bool>{};
 
-  TreeController({allNodesExpanded = true})
+  /// Whether the tree supports selecting multiple elements.
+  bool multipleSelection;
+  final Map<Key, bool> _expanded = <Key, bool>{};
+  final Set<Key> _selected = {};
+
+  TreeController({allNodesExpanded = true, this.multipleSelection = false})
       : _allNodesExpanded = allNodesExpanded;
 
   bool get allNodesExpanded => _allNodesExpanded;
@@ -42,5 +46,22 @@ class TreeController {
 
   void collapseNode(Key key) {
     _expanded[key] = false;
+  }
+
+  bool isSelected(Key key) => _selected.contains(key);
+
+  void toggleSelection(Key key) {
+    if (isSelected(key)) {
+      _selected.remove(key);
+    }
+
+    _selected.add(key);
+  }
+
+  void select(Key key) {
+    if (!multipleSelection) {
+      _selected.clear();
+    }
+    _selected.add(key);
   }
 }

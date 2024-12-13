@@ -31,7 +31,7 @@ class NodeWidget extends StatefulWidget {
 
 class _NodeWidgetState extends State<NodeWidget> {
   bool get _isLeaf {
-    return !widget.treeNode.lazy || 
+    return !widget.treeNode.lazy ||
         widget.treeNode.children == null ||
         widget.treeNode.children!.isEmpty;
   }
@@ -40,13 +40,23 @@ class _NodeWidgetState extends State<NodeWidget> {
     return widget.state.isNodeExpanded(widget.treeNode.key!);
   }
 
+  bool get _isSelected {
+    return widget.state.isSelected(widget.treeNode.key!);
+  }
+
   Future<List<TreeNode>>? future;
 
   @override
   void initState() {
     super.initState();
 
-    future = widget.treeNode.onExpandToggle();
+    if (widget.treeNode.onExpandToggle != null) {
+      future = widget.treeNode.onExpandToggle!();
+    }
+  }
+
+  void onSelect() {
+    widget.state.toggleSelection(widget.treeNode.key!);
   }
 
   @override
@@ -62,6 +72,8 @@ class _NodeWidgetState extends State<NodeWidget> {
         : () => setState(
             () => widget.state.toggleNodeExpanded(widget.treeNode.key!));
 
+    ThemeData theme = Theme.of(context);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -72,35 +84,43 @@ class _NodeWidgetState extends State<NodeWidget> {
               icon: Icon(icon),
               onPressed: onIconPressed,
             ),
-            widget.treeNode.content,
+            GestureDetector(
+              child: Container(
+                color: _isSelected ? theme.highlightColor : null,
+                child: widget.treeNode.content,
+              ),
+              onTap: onSelect,
+            ),
           ],
         ),
         if (_isExpanded && !_isLeaf)
-          if (widget.treeNode.lazy) {
+          if (widget.treeNode.lazy)
             FutureBuilder(
-              future: future,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  List<TreeNode> children = widget.treeNode.children ?? [];
+                future: future,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    List<TreeNode> children = widget.treeNode.children ?? [];
 
-                  children = [...children, ...snapshot.data];
+                    children = [
+                      ...children,
+                      ...snapshot.data as List<TreeNode>
+                    ];
 
-                  return Padding(
-                    padding: EdgeInsets.only(left: widget.indent!),
-                    child: buildNodes(widget.treeNode.children!, widget.indent,
-                        widget.state, widget.iconSize),
-                  );
-                }
+                    return Padding(
+                      padding: EdgeInsets.only(left: widget.indent!),
+                      child: buildNodes(widget.treeNode.children!,
+                          widget.indent, widget.state, widget.iconSize),
+                    );
+                  }
 
-                return CircularProgressIndicator();
-              }
+                  return CircularProgressIndicator();
+                })
+          else
+            Padding(
+              padding: EdgeInsets.only(left: widget.indent!),
+              child: buildNodes(widget.treeNode.children!, widget.indent,
+                  widget.state, widget.iconSize),
             )
-          }
-          Padding(
-            padding: EdgeInsets.only(left: widget.indent!),
-            child: buildNodes(widget.treeNode.children!, widget.indent,
-                widget.state, widget.iconSize),
-          )
       ],
     );
   }

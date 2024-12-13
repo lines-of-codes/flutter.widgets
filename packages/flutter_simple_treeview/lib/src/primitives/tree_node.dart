@@ -14,6 +14,11 @@ class TreeNode {
   final bool lazy;
   final Future<List<TreeNode>> Function()? onExpandToggle;
 
-  TreeNode({this.key, this.children = [], Widget? content, this.lazy = false, this.onExpandToggle})
+  TreeNode(
+      {this.key,
+      this.children = const [],
+      Widget? content,
+      this.lazy = false,
+      this.onExpandToggle})
       : content = content ?? Container(width: 0, height: 0);
 }
