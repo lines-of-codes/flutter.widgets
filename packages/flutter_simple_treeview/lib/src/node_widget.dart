@@ -55,9 +55,7 @@ class _NodeWidgetState extends State<NodeWidget> {
   }
 
   void onSelect() {
-    setState(() {
-      widget.state.toggleSelection(widget.treeNode.key!);
-    });
+    widget.state.toggleSelection(widget.treeNode.key!);
   }
 
   Widget getChildren() {
@@ -115,7 +113,11 @@ class _NodeWidgetState extends State<NodeWidget> {
             ),
             GestureDetector(
               child: Container(
-                color: _isSelected ? theme.highlightColor : null,
+                padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: _isSelected ? theme.highlightColor : null,
+                ),
                 child: widget.treeNode.content,
               ),
               onTap: onSelect,

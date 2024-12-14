@@ -4,6 +4,7 @@
 // license that can be found in the LICENSE file or at
 // https://developers.google.com/open-source/licenses/bsd
 
+import 'package:event/event.dart';
 import 'package:flutter/foundation.dart';
 
 /// A controller for a tree state.
@@ -16,6 +17,7 @@ class TreeController {
   bool multipleSelection;
   final Map<Key, bool> _expanded = <Key, bool>{};
   final Set<Key> _selected = {};
+  final Event<Value<Key>> elementSelected = Event("elementSelected");
 
   TreeController({allNodesExpanded = true, this.multipleSelection = false})
       : _allNodesExpanded = allNodesExpanded;
@@ -56,7 +58,7 @@ class TreeController {
       return;
     }
 
-    _selected.add(key);
+    select(key);
   }
 
   void select(Key key) {
@@ -64,5 +66,6 @@ class TreeController {
       _selected.clear();
     }
     _selected.add(key);
+    elementSelected.broadcast(Value(key));
   }
 }
