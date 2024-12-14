@@ -31,9 +31,8 @@ class NodeWidget extends StatefulWidget {
 
 class _NodeWidgetState extends State<NodeWidget> {
   bool get _isLeaf {
-    return !widget.treeNode.lazy ||
-        widget.treeNode.children == null ||
-        widget.treeNode.children!.isEmpty;
+    return !widget.treeNode.lazy &&
+        (widget.treeNode.children == null || widget.treeNode.children!.isEmpty);
   }
 
   bool get _isExpanded {
@@ -56,7 +55,9 @@ class _NodeWidgetState extends State<NodeWidget> {
   }
 
   void onSelect() {
-    widget.state.toggleSelection(widget.treeNode.key!);
+    setState(() {
+      widget.state.toggleSelection(widget.treeNode.key!);
+    });
   }
 
   Widget getChildren() {

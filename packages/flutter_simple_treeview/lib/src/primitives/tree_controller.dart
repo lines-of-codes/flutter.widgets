@@ -53,6 +53,7 @@ class TreeController {
   void toggleSelection(Key key) {
     if (isSelected(key)) {
       _selected.remove(key);
+      return;
     }
 
     _selected.add(key);
