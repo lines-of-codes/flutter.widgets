@@ -59,6 +59,34 @@ class _NodeWidgetState extends State<NodeWidget> {
     widget.state.toggleSelection(widget.treeNode.key!);
   }
 
+  Widget getChildren() {
+    if (widget.treeNode.lazy) {
+      return FutureBuilder(
+          future: future,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              List<TreeNode> children = widget.treeNode.children ?? [];
+
+              children = [...children, ...snapshot.data as List<TreeNode>];
+
+              return Padding(
+                padding: EdgeInsets.only(left: widget.indent!),
+                child: buildNodes(widget.treeNode.children!, widget.indent,
+                    widget.state, widget.iconSize),
+              );
+            }
+
+            return CircularProgressIndicator();
+          });
+    }
+
+    return Padding(
+      padding: EdgeInsets.only(left: widget.indent!),
+      child: buildNodes(widget.treeNode.children!, widget.indent, widget.state,
+          widget.iconSize),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     var icon = _isLeaf
@@ -93,34 +121,7 @@ class _NodeWidgetState extends State<NodeWidget> {
             ),
           ],
         ),
-        if (_isExpanded && !_isLeaf)
-          if (widget.treeNode.lazy)
-            FutureBuilder(
-                future: future,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    List<TreeNode> children = widget.treeNode.children ?? [];
-
-                    children = [
-                      ...children,
-                      ...snapshot.data as List<TreeNode>
-                    ];
-
-                    return Padding(
-                      padding: EdgeInsets.only(left: widget.indent!),
-                      child: buildNodes(widget.treeNode.children!,
-                          widget.indent, widget.state, widget.iconSize),
-                    );
-                  }
-
-                  return CircularProgressIndicator();
-                })
-          else
-            Padding(
-              padding: EdgeInsets.only(left: widget.indent!),
-              child: buildNodes(widget.treeNode.children!, widget.indent,
-                  widget.state, widget.iconSize),
-            )
+        if (_isExpanded && !_isLeaf) getChildren()
       ],
     );
   }
