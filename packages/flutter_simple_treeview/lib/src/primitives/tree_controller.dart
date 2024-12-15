@@ -6,6 +6,7 @@
 
 import 'package:event/event.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_simple_treeview/src/primitives/tree_node.dart';
 
 /// A controller for a tree state.
 ///
@@ -16,8 +17,9 @@ class TreeController {
   /// Whether the tree supports selecting multiple elements.
   bool multipleSelection;
   final Map<Key, bool> _expanded = <Key, bool>{};
-  final Set<Key> _selected = {};
-  final Event<Value<Key>> elementSelected = Event("elementSelected");
+  final Map<Key, TreeNode> _selected = {};
+  final Event<Value<MapEntry<Key, TreeNode>>> elementSelected =
+      Event("elementSelected");
 
   TreeController({allNodesExpanded = true, this.multipleSelection = false})
       : _allNodesExpanded = allNodesExpanded;
@@ -50,22 +52,22 @@ class TreeController {
     _expanded[key] = false;
   }
 
-  bool isSelected(Key key) => _selected.contains(key);
+  bool isSelected(Key key) => _selected.containsKey(key);
 
-  void toggleSelection(Key key) {
+  void toggleSelection(Key key, TreeNode node) {
     if (isSelected(key)) {
       _selected.remove(key);
       return;
     }
 
-    select(key);
+    select(key, node);
   }
 
-  void select(Key key) {
+  void select(Key key, TreeNode node) {
     if (!multipleSelection) {
       _selected.clear();
     }
-    _selected.add(key);
-    elementSelected.broadcast(Value(key));
+    _selected[key] = node;
+    elementSelected.broadcast(Value(MapEntry(key, node)));
   }
 }

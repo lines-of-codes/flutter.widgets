@@ -14,11 +14,15 @@ class TreeNode {
   final bool lazy;
   final Future<List<TreeNode>> Function()? onExpandToggle;
 
+  /// A value of the node. useful in backend code.
+  dynamic value;
+
   TreeNode(
       {this.key,
       this.children = const [],
       Widget? content,
       this.lazy = false,
-      this.onExpandToggle})
+      this.onExpandToggle,
+      this.value})
       : content = content ?? Container(width: 0, height: 0);
 }
