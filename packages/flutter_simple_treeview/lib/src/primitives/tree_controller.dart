@@ -18,8 +18,7 @@ class TreeController {
   bool multipleSelection;
   final Map<Key, bool> _expanded = <Key, bool>{};
   final Map<Key, TreeNode> _selected = {};
-  final Event<Value<MapEntry<Key, TreeNode>>> elementSelected =
-      Event("elementSelected");
+  final Event<Value<TreeNode>> nodeSelected = Event("elementSelected");
 
   TreeController({allNodesExpanded = true, this.multipleSelection = false})
       : _allNodesExpanded = allNodesExpanded;
@@ -54,13 +53,13 @@ class TreeController {
 
   bool isSelected(Key key) => _selected.containsKey(key);
 
-  void toggleSelection(Key key, TreeNode node) {
-    if (isSelected(key)) {
-      _selected.remove(key);
+  void toggleSelection(TreeNode node) {
+    if (isSelected(node.key!)) {
+      _selected.remove(node.key);
       return;
     }
 
-    select(key, node);
+    select(node.key!, node);
   }
 
   void select(Key key, TreeNode node) {
@@ -68,6 +67,6 @@ class TreeController {
       _selected.clear();
     }
     _selected[key] = node;
-    elementSelected.broadcast(Value(MapEntry(key, node)));
+    nodeSelected.broadcast(Value(node));
   }
 }

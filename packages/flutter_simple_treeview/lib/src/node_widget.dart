@@ -55,7 +55,7 @@ class _NodeWidgetState extends State<NodeWidget> {
   }
 
   void onSelect() {
-    widget.state.toggleSelection(widget.treeNode.key!, widget.treeNode);
+    widget.state.toggleSelection(widget.treeNode);
   }
 
   Widget getChildren() {

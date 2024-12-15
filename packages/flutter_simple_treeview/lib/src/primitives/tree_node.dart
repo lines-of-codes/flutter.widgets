@@ -7,7 +7,7 @@
 import 'package:flutter/material.dart';
 
 /// One node of a tree.
-class TreeNode {
+class TreeNode<T> {
   final List<TreeNode>? children;
   final Widget content;
   final Key? key;
@@ -15,7 +15,7 @@ class TreeNode {
   final Future<List<TreeNode>> Function()? onExpandToggle;
 
   /// A value of the node. useful in backend code.
-  dynamic value;
+  final T? value;
 
   TreeNode(
       {this.key,

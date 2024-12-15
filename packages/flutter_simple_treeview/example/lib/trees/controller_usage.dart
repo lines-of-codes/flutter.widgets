@@ -4,6 +4,7 @@
 // license that can be found in the LICENSE file or at
 // https://developers.google.com/open-source/licenses/bsd
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_simple_treeview/flutter_simple_treeview.dart';
 
@@ -17,6 +18,17 @@ class ControllerUsage extends StatefulWidget {
 class _ControllerUsageState extends State<ControllerUsage> {
   final Key _key = ValueKey(22);
   final TreeController _controller = TreeController(allNodesExpanded: true);
+
+  @override
+  void initState() {
+    _controller.nodeSelected.subscribe((value) {
+      if (kDebugMode) {
+        print(value.value.value);
+      }
+    });
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

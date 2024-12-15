@@ -22,6 +22,9 @@ List<TreeNode>? _copyNodesRecursively(
       key: keyProvider.key(n.key),
       content: n.content,
       children: _copyNodesRecursively(n.children, keyProvider),
+      value: n.value,
+      lazy: n.lazy,
+      onExpandToggle: n.onExpandToggle,
     );
   }));
 }
