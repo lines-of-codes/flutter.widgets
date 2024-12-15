@@ -46,7 +46,7 @@ class _TreeViewState extends State<TreeView> {
     _controller = widget.treeController ?? TreeController();
     super.initState();
 
-    _controller?.elementSelected.subscribe((key) => setState(() {}));
+    _controller?.nodeSelected.subscribe((value) => setState(() {}));
   }
 
   @override
